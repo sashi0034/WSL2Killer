@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,17 @@ namespace WSL2Killer
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ProcessStartInfo processStartInfo = new ProcessStartInfo("wsl.exe", "--shutdown");
+            Process process = Process.Start(processStartInfo);
+
+            process.EnableRaisingEvents = true;
+            process.Exited += new EventHandler((senderer, e) => {
+                MessageBox.Show("WSL2を終了しました", "おねんね");            
+            });
         }
     }
 }
