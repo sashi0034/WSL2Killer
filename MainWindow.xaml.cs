@@ -26,7 +26,7 @@ namespace WSL2Killer
         {
             InitializeComponent();
 
-            commandShutdown = new(viewShutdown, "wsl.exe", "--shutdown");
+            commandShutdown = new(viewShutdown, new CommandLine[] { new CommandLine("wsl.exe", "--shutdown") });
         }
 
     }

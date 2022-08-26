@@ -10,18 +10,24 @@ using Controls = System.Windows.Controls;
 
 namespace WSL2Killer
 {
+    record class CommandLine(string Name, string Argment)
+    {
+        public string GetLine()
+        {
+            return Name + " " + Argment;
+        }
+    }
+
+
     internal class CommandExecutor
     {
         private readonly Controls.Button buttonRef;
-        private string commandLiteral;
-        private string argumentLiteral;
+        private CommandLine[] commandQue;
 
-        public CommandExecutor(CommandView viewRef, string commandLiteral, string argumentLiteral)
+        public CommandExecutor(CommandView viewRef, CommandLine[] commandQue)
         {
             this.buttonRef = viewRef.GetButton();
-            this.commandLiteral = commandLiteral;
-            this.argumentLiteral = argumentLiteral;
-
+            this.commandQue = commandQue;
             init();
         }
 
@@ -31,29 +37,53 @@ namespace WSL2Killer
             buttonRef.Content = getCommandToExecute();
         }
         
-        public void UpdateCommand(string commandLiteral, string argumentLiteral)
+        public void UpdateCommand(CommandLine[] commandQue)
         {
-            this.commandLiteral = commandLiteral;
-            this.argumentLiteral = argumentLiteral;
+            this.commandQue = commandQue;
 
             buttonRef.Content = getCommandToExecute();
         }
 
         private string getCommandToExecute()
         {
-            return commandLiteral + " " + argumentLiteral;
+            string result = "";
+            for (int i=0; i<commandQue.Length; ++i)
+            {
+                var nextLine = commandQue[i];
+                result += nextLine.GetLine();
+                if (i == commandQue.Length - 1) break;
+                result += "\n";
+            }
+
+            return result;
         }
 
-        private void onClick(object sender, RoutedEventArgs e)
+        private async void onClick(object sender, RoutedEventArgs e)
         {
-            ProcessStartInfo processStartInfo = new ProcessStartInfo(commandLiteral, argumentLiteral);
+            var numLine = commandQue.Length;
+            for (int i=0; i<numLine; ++i)
+            {
+                await executeLine(numLine, i);
+            }
+        }
+
+        private async Task executeLine(int numLine, int index)
+        {
+            var nextLine = commandQue[index];
+            ProcessStartInfo processStartInfo = new ProcessStartInfo(nextLine.Name, nextLine.Argment);
             Process process = Process.Start(processStartInfo);
 
             process.EnableRaisingEvents = true;
-            process.Exited += new EventHandler((senderer, e) => {
-                MessageBox.Show(getCommandToExecute() + "\nを実行しました", "コマンド実行");
-            });
-        }
 
+            var onFinish = new TaskCompletionSource<Unit>();
+
+            process.Exited += new EventHandler((senderer, e) =>
+            {
+                if (index == numLine - 1) MessageBox.Show(getCommandToExecute() + "\nを実行しました", "コマンド実行");
+                onFinish.SetResult(Unit.Default);
+            });
+
+            await onFinish.Task;
+        }
     }
 }
