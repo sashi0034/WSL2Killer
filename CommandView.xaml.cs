@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,17 +16,18 @@ using System.Windows.Shapes;
 namespace WSL2Killer
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// CommandControll.xaml の相互作用ロジック
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class CommandView : UserControl
     {
-        private readonly CommandExecutor commandShutdown;
-        public MainWindow()
+        public CommandView()
         {
             InitializeComponent();
-
-            commandShutdown = new(viewShutdown, "wsl.exe", "--shutdown");
         }
 
+        public Button GetButton()
+        {
+            return button;
+        }
     }
 }

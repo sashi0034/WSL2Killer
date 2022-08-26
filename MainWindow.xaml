@@ -5,29 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WSL2Killer"
         mc:Ignorable="d"
-        Title="WSL2 Killer" Height="200" Width="400">
-    <Grid Background="#333">
-        <StackPanel VerticalAlignment="Center">
-            <TextBlock 
-                Margin="10"
-                HorizontalAlignment="Center"
-                Foreground="White"
-                Text="CLIP STUDIO PAINTを快適に使うために&#10;WSL2に犠牲になってもらいましょう"/>
-
-            <Button Width="120" Height="40" Content="WSL2 おねんね" Click="Button_Click">
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border"
-                    BorderThickness="1"
-                    BorderBrush="DarkGray"
-                    Background="#eef"
-                    CornerRadius="10">
-                            <ContentPresenter VerticalAlignment="Center"
-                                  HorizontalAlignment="Center" />
-                        </Border>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-        </StackPanel>
+        Title="WSL2 Killer" Height="320" Width="400" ResizeMode="CanMinimize">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="./MainWindowResource.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Grid Background="{StaticResource NormalDark}">
+        <Grid VerticalAlignment="Center">
+            <StackPanel VerticalAlignment="Center">
+                <StackPanel>
+                    <TextBlock Text="WSL2をシャットダウンします。"/>
+                    <local:CommandView x:Name="viewShutdown"/>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="WSL2を再起動します。"/>
+                    <local:CommandView x:Name="viewRestart"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
